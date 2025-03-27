@@ -1,4 +1,4 @@
-﻿namespace CatalogApi.Products.DeleteProduct;
+﻿namespace Catalog.API.Products.DeleteProduct;
 
 //public record DeleteProductRequest();
 public record DeleteProductResponse(bool IsSuccess);

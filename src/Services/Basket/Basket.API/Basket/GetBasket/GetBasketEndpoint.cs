@@ -1,4 +1,4 @@
-﻿namespace BasketApi.Basket.GetBasket;
+﻿namespace Basket.API.Basket.GetBasket;
 
 //public record GetBasketRequest();
 public record GetBasketResponse(ShoppingCard Card);

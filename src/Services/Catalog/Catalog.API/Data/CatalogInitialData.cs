@@ -1,6 +1,7 @@
-﻿using Marten.Schema;
+﻿using Catalog.API.Models;
+using Marten.Schema;
 
-namespace CatalogApi.Data;
+namespace Catalog.API.Data;
 
 public class CatalogInitialData : IInitialData
 {
@@ -14,7 +15,7 @@ public class CatalogInitialData : IInitialData
         }
 
         // Marten UPSERT will cater for existing records
-        session.Store<Product>(GetPreconfiguredProducts());
+        session.Store(GetPreconfiguredProducts());
         await session.SaveChangesAsync(cancellation);
     }
 
