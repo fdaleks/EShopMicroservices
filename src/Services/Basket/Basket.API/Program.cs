@@ -1,12 +1,14 @@
+using Discount.Grpc;
+
 // CREATE WEB APPLICATION BUILDER
 var builder = WebApplication.CreateBuilder(args);
 
 // ADD SERVICES TO THE CONTAINER
 var assembly = typeof(Program).Assembly;
-string postgresConnectionString = builder.Configuration.GetConnectionString("Database")!;
-string redisConnectionString = builder.Configuration.GetConnectionString("Redis")!;
+string postgConStr = builder.Configuration.GetConnectionString("Database")!;
+string redisConStr = builder.Configuration.GetConnectionString("Redis")!;
 
-// add 'MediatR' for CQRS pattern, validation and logging behaviors
+// add application services
 builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssembly(assembly);
@@ -14,47 +16,54 @@ builder.Services.AddMediatR(options =>
     options.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
-builder.Services.AddValidatorsFromAssembly(assembly);
-
-// add 'Carter' for minimal api
 builder.Services.AddCarter();
 
-// add 'Marten' for transactional document DB on postgres
+// add data services
 builder.Services.AddMarten(options =>
 {
-    options.Connection(postgresConnectionString);
+    options.Connection(postgConStr);
     options.Schema.For<ShoppingCard>().Identity(x => x.UserName);
 }).UseLightweightSessions();
 
-// add custom exception handler
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
-// add health check for the application, and for the database
-builder.Services.AddHealthChecks()
-    .AddNpgSql(postgresConnectionString)
-    .AddRedis(redisConnectionString);
-
-// add other services using dependency injection
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.Decorate<IBasketRepository, CacheBasketRepository>();
 
-// add redis cache
-builder.Services.AddStackExchangeRedisCache(options => 
+builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = redisConnectionString;
+    options.Configuration = redisConStr;
 });
+
+// add grpc services
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+}).ConfigurePrimaryHttpMessageHandler(() => 
+{
+    var handler = new HttpClientHandler
+    {
+        // don't use it in prod!
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
+    return handler;
+});
+
+// add cross-cutting services
+builder.Services.AddValidatorsFromAssembly(assembly);
+
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services.AddHealthChecks()
+    .AddNpgSql(postgConStr)
+    .AddRedis(redisConStr);
 
 // BUILD THE APPLICATION
 var app = builder.Build();
 
 // CONFIGURE THE HTTP REQUESTS PIPELINE
-// map controllers
 app.MapCarter();
 
-// configure application to use global exceptions handler
 app.UseExceptionHandler(options => { });
 
-// configure health check
 app.UseHealthChecks("/health",
     new HealthCheckOptions
     {

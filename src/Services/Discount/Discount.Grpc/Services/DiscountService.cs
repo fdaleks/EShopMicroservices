@@ -17,7 +17,6 @@ public class DiscountService(DataContext dataContext, ILogger<DiscountService> l
         return couponModel;
     }
 
-    // TODO: rewrite for using id instead of productName
     public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
     {
         var coupon = await dataContext.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName);
@@ -44,7 +43,6 @@ public class DiscountService(DataContext dataContext, ILogger<DiscountService> l
         return couponModel;
     }
 
-    // TODO: rewrite for using id instead of productName
     public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
     {
         var coupon = await dataContext.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName)
