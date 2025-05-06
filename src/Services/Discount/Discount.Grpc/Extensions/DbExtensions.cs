@@ -1,6 +1,6 @@
-﻿namespace Discount.Grpc.Data;
+﻿namespace Discount.Grpc.Extensions;
 
-public static class Extensions
+public static class DbExtensions
 {
     public static IApplicationBuilder UseMigration(this IApplicationBuilder app)
     {
