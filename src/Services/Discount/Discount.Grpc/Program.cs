@@ -6,7 +6,7 @@ string connectionString = builder.Configuration.GetConnectionString("Database")!
 // add grpc service
 builder.Services.AddGrpc();
 // add sqlite database
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<DiscountDbContext>(options => options.UseSqlite(connectionString));
 
 // BUILD THE APPLICATION
 var app = builder.Build();

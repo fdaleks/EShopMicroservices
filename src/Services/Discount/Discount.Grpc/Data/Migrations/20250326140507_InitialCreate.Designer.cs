@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Discount.Grpc.Migrations
 {
-    [DbContext(typeof(DataContext))]
+    [DbContext(typeof(DiscountDbContext))]
     [Migration("20250326140507_InitialCreate")]
     partial class InitialCreate
     {

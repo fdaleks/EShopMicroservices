@@ -12,7 +12,7 @@ using Ordering.Infrastructure.Data;
 
 namespace Ordering.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(DataContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250501133317_AddedCityToAddressValueObject")]
     partial class AddedCityToAddressValueObject
     {

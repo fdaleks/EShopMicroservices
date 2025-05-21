@@ -9,21 +9,21 @@ public static class DatabaseExtensions
     {
         using var scope = application.Services.CreateScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<DataContext>();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         context.Database.MigrateAsync().GetAwaiter().GetResult();
 
         await SeedAsync(context);
     }
 
-    private static async Task SeedAsync(DataContext context)
+    private static async Task SeedAsync(ApplicationDbContext context)
     {
         await SeedCustomersAsync(context);
         await SeedProductsAsync(context);
         await SeedOrdersAndItemsAsync(context);
     }
 
-    private static async Task SeedCustomersAsync(DataContext context)
+    private static async Task SeedCustomersAsync(ApplicationDbContext context)
     {
         if (!await context.Customers.AnyAsync())
         {
@@ -32,7 +32,7 @@ public static class DatabaseExtensions
         }
     }
 
-    private static async Task SeedProductsAsync(DataContext context)
+    private static async Task SeedProductsAsync(ApplicationDbContext context)
     {
         if (!await context.Products.AnyAsync())
         {
@@ -41,7 +41,7 @@ public static class DatabaseExtensions
         }
     }
 
-    private static async Task SeedOrdersAndItemsAsync(DataContext context)
+    private static async Task SeedOrdersAndItemsAsync(ApplicationDbContext context)
     {
         if (!await context.Orders.AnyAsync())
         {

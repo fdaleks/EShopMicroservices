@@ -1,6 +1,6 @@
 ﻿namespace Discount.Grpc.Services;
 
-public class DiscountService(DataContext dataContext, ILogger<DiscountService> logger) 
+public class DiscountService(DiscountDbContext dataContext, ILogger<DiscountService> logger) 
     : DiscountProtoService.DiscountProtoServiceBase
 {
     public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
