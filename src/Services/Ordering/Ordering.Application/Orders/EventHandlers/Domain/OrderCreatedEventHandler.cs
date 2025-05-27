@@ -6,6 +6,6 @@ public class OrderCreatedEventHandler(ILogger<OrderCreatedEventHandler> logger) 
     {
         logger.LogInformation("Domain Event handled: {DomainEvent}", notification.GetType().Name);
 
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

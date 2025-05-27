@@ -14,7 +14,7 @@ public static class OrderExtensions
             BillingAddress: new AddressDto(order.BillingAddress.FirstName, order.BillingAddress.LastName,
                 order.BillingAddress.Email, order.BillingAddress.AddressLine, order.BillingAddress.City,
                 order.BillingAddress.State, order.BillingAddress.ZipCode, order.BillingAddress.Country),
-            Payment: new PaymentDto(order.Payment.CardName, order.Payment.CardName,
+            Payment: new PaymentDto(order.Payment.CardName, order.Payment.CardNumber,
                 order.Payment.Expiration, order.Payment.CVV, order.Payment.PaymentMethod),
             Status: order.Status,
             OrderItems: order.OrderItems.Select(x => new OrderItemDto(x.OrderId.Value, x.ProductId.Value, x.Quantity, x.Price)).ToList()

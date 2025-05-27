@@ -55,6 +55,12 @@ public class Order : Aggregate<OrderId>
         _orderItems.Add(orderItem);
     }
 
+    public void UpdateOrderItem(ProductId productId, int quantity, decimal price)
+    {
+        var orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);
+        orderItem?.Update(quantity, price);
+    }
+
     public void RemoveOrderItem(ProductId productId)
     {
         var orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);

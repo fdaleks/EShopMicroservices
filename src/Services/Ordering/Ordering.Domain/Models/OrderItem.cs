@@ -15,4 +15,10 @@ public class OrderItem : Entity<OrderItemId>
     public ProductId ProductId { get; private set; } = default!;
     public int Quantity { get; private set; } = default;
     public decimal Price { get; private set; } = default;
+
+    public void Update(int quantity, decimal price)
+    {
+        Quantity = quantity;
+        Price = price;
+    }
 }

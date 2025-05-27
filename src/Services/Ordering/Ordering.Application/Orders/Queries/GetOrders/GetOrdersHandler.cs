@@ -6,7 +6,7 @@ public class GetOrdersHandler(IApplicationDbContext dbContext) : IQueryHandler<G
 {
     public async Task<GetOrdersResult> Handle(GetOrdersQuery query, CancellationToken cancellationToken)
     {
-        var pageIndex = query.PaginationRequest.PageIndex;
+        var pageNumber = query.PaginationRequest.PageNumber;
         var pageSize = query.PaginationRequest.PageSize;
 
         var totalCount = await dbContext.Orders.LongCountAsync(cancellationToken);
@@ -14,11 +14,11 @@ public class GetOrdersHandler(IApplicationDbContext dbContext) : IQueryHandler<G
         var orders = await dbContext.Orders
             .Include(x => x.OrderItems)
             .OrderBy(x => x.OrderName.Value)
-            .Skip(pageSize * pageIndex)
+            .Skip(pageSize * pageNumber)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        var result = new PaginatedResult<OrderDto>(pageIndex, pageSize, totalCount, orders.ToOrderDtoList());
+        var result = new PaginatedResult<OrderDto>(pageNumber, pageSize, totalCount, orders.ToOrderDtoList());
         return new GetOrdersResult(result);
     }
 }

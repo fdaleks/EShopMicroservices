@@ -7,7 +7,12 @@ public class UpdateOrderHandler(IApplicationDbContext dbContext) : ICommandHandl
     public async Task<UpdateOrderResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
     {
         var orderId = OrderId.Of(command.Order.Id);
-        var order = await dbContext.Orders.FindAsync([orderId], cancellationToken) ?? throw new OrderNotFoundException(orderId.Value);
+        var order = await dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == orderId, cancellationToken);
+
+        if (order is null)
+        {
+            throw new OrderNotFoundException(orderId.Value);
+        }
 
         UpdateOrderWithNewValues(order, command.Order);
         dbContext.Orders.Update(order);
@@ -32,5 +37,10 @@ public class UpdateOrderHandler(IApplicationDbContext dbContext) : ICommandHandl
             orderDto.Payment.Expiration, orderDto.Payment.Cvv, orderDto.Payment.PaymentMethod);
 
         order.Update(orderName, shippingAddress, billingAddress, payment, orderDto.Status);
+
+        foreach (var orderItem in orderDto.OrderItems)
+        {
+            order.UpdateOrderItem(ProductId.Of(orderItem.ProductId), orderItem.Quantity, orderItem.Price);
+        }
     }
 }
