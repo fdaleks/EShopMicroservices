@@ -1,4 +1,5 @@
 using Discount.Grpc;
+using BuildingBlocks.Messaging.MassTransit;
 
 // CREATE WEB APPLICATION BUILDER
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +47,9 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
     };
     return handler;
 });
+
+// add async communication service
+builder.Services.AddMessageBroker(builder.Configuration);
 
 // add cross-cutting services
 builder.Services.AddValidatorsFromAssembly(assembly);
